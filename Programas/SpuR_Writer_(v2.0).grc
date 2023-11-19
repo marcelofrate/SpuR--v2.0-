@@ -1,0 +1,462 @@
+options:
+  parameters:
+    author: Frate, M.
+    catch_exceptions: 'True'
+    category: '[GRC Hier Blocks]'
+    cmake_opt: ''
+    comment: SpuR - (v2.0)
+    copyright: ''
+    description: SpuR - (v2.0) - An Spectral Signature Writer System in Chipless Tags
+    gen_cmake: 'On'
+    gen_linking: dynamic
+    generate_options: qt_gui
+    hier_block_src_path: '.:'
+    id: SpuR_Writer_v2_0
+    max_nouts: '0'
+    output_language: python
+    placement: (0,0)
+    qt_qss_theme: ''
+    realtime_scheduling: ''
+    run: 'True'
+    run_command: '{python} -u {filename}'
+    run_options: prompt
+    sizing_mode: fixed
+    thread_safe_setters: ''
+    title: SpuR (v2.0)
+    window_size: (1000,1000)
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [8, 8]
+    rotation: 0
+    state: enabled
+
+blocks:
+- name: amplitude
+  id: variable_qtgui_label
+  parameters:
+    comment: ''
+    formatter: None
+    gui_hint: 2,1,1,1
+    label: 'Amplitude :'
+    type: raw
+    value: fun_prob
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [192, 12.0]
+    rotation: 0
+    state: enabled
+- name: freqc
+  id: variable
+  parameters:
+    comment: ''
+    value: python_mod.sweeper(fun_prob)
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [88, 212.0]
+    rotation: 0
+    state: true
+- name: frequency
+  id: variable_qtgui_label
+  parameters:
+    comment: ''
+    formatter: None
+    gui_hint: 2,0,1,1
+    label: Frequency
+    type: real
+    value: python_mod.sweeper(fun_prob)
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [336, 12.0]
+    rotation: 0
+    state: enabled
+- name: fun_prob
+  id: variable_function_probe
+  parameters:
+    block_id: probSign
+    comment: ''
+    function_args: ''
+    function_name: level
+    poll_rate: samp_rate
+    value: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [488, 12.0]
+    rotation: 0
+    state: true
+- name: samp_rate
+  id: variable
+  parameters:
+    comment: ''
+    value: '50000000'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [80, 140.0]
+    rotation: 0
+    state: enabled
+- name: analog_sig_source
+  id: analog_sig_source_x
+  parameters:
+    affinity: ''
+    alias: ''
+    amp: '10'
+    comment: ''
+    freq: '0.00001'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    offset: '0'
+    phase: '0'
+    samp_rate: samp_rate
+    showports: 'False'
+    type: float
+    waveform: analog.GR_CONST_WAVE
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [212, 112]
+    rotation: 0
+    state: enabled
+- name: complex_to_mag
+  id: blocks_complex_to_mag
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [256, 332.0]
+    rotation: 0
+    state: enabled
+- name: hilbert
+  id: hilbert_fc
+  parameters:
+    affinity: ''
+    alias: ''
+    beta: '6.76'
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_taps: '500'
+    win: window.WIN_RECTANGULAR
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [464, 188.0]
+    rotation: 0
+    state: enabled
+- name: iio_pluto_sink
+  id: iio_pluto_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    attenuation1: '0'
+    bandwidth: '1000000'
+    buffer_size: '1000'
+    comment: ''
+    cyclic: 'True'
+    filter: ''
+    filter_source: '''Auto'''
+    fpass: '0'
+    frequency: freqc
+    fstop: '0'
+    len_tag_key: ''
+    samplerate: samp_rate
+    type: fc32
+    uri: ip:192.168.2.1
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [648, 112.0]
+    rotation: 0
+    state: enabled
+- name: iio_pluto_source
+  id: iio_pluto_source
+  parameters:
+    affinity: ''
+    alias: ''
+    bandwidth: '1000000'
+    bbdc: 'False'
+    buffer_size: '1000'
+    comment: ''
+    filter: ''
+    filter_source: '''Auto'''
+    fpass: '0'
+    frequency: freqc
+    fstop: '0'
+    gain1: '''manual'''
+    len_tag_key: packet_len
+    manual_gain1: '0'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    quadrature: 'False'
+    rfdc: 'False'
+    samplerate: samp_rate
+    type: fc32
+    uri: ip:192.168.2.1
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [16, 292.0]
+    rotation: 0
+    state: enabled
+- name: moving_average
+  id: blocks_moving_average_xx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    length: '100000'
+    max_iter: '10000'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    scale: '0.00001'
+    type: float
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [448, 348.0]
+    rotation: 0
+    state: enabled
+- name: probSign
+  id: blocks_probe_signal_x
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    type: float
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [656, 428.0]
+    rotation: 0
+    state: enabled
+- name: python_mod
+  id: epy_module
+  parameters:
+    alias: ''
+    comment: ''
+    source_code: "#**********************************************#\n#  Programa Gravador\
+      \ de Tags Chipless de RFID  #\n#\t\t\t\t\tV:2.0\t\t\t\t\t   #\n#**********************************************#\n\
+      import csv\nimport matplotlib\nmatplotlib.use('Agg')\nimport matplotlib.pyplot\
+      \ as plt\nimport numpy as np\nimport os\nimport pandas as pd\nimport threading\n\
+      from matplotlib.ticker import FuncFormatter\nfrom pandas.plotting import table\n\
+      from scipy.spatial import distance\nfrom scipy.spatial.distance import minkowski,\
+      \ chebyshev\nfrom scipy import interpolate\nfrom scipy.stats import pearsonr\n\
+      F1 =   78000000\nF2 = 6000000000\nstep =  1000000\nf =    70000000\nf_minima\
+      \ =   70000000\nf_maxima = 6000000000\nsinais_rf = []\nlock = threading.Lock()\n\
+      num_attempts = 4\nleitura_concluida = False\n\n#***********************************************#\n\
+      #  ID da tag RFID que est\xE1 sendo gravada no BD  #\n#\t\t\t\t\t\t\t\t\t\t\t\
+      \t#\nID = \"6\"\t\t\t\t\t\t\t\t\t\t#\n#\t\t\t\t\t\t\t\t\t\t\t\t#\n#\t\t\t\t\t\
+      \t\t\t\t\t\t\t#\n#***********************************************#  \n\ndef\
+      \ sweeper(prob_lvl):\n    global f, sinais_rf, leitura_concluida, ID, F1, F2,\
+      \ step, pasta_principal\n    if f < F1:\n        with lock:\n            f +=\
+      \ step\n        return f\n    if prob_lvl and not leitura_concluida:\n     \
+      \   with lock:\n            sinais_rf.append((f, prob_lvl))\n            f +=\
+      \ step\n        if f > F2 and not leitura_concluida:\n            with lock:\n\
+      \                sinais_rf_tratados = [] \n                for sinal in sinais_rf:\n\
+      \                    sinais_rf_tratados.append(tratar_real(*sinal))\n      \
+      \          configurar_parametros()\n                pasta_principal = criar_pastas()\n\
+      \                salvar_dados(sinais_rf_tratados, pasta_principal, ID)\n   \
+      \             plotar_graficos(sinais_rf_tratados, pasta_principal, ID, formato='png')\n\
+      \                plotar_graficos(sinais_rf_tratados, pasta_principal, ID, formato='pdf')\n\
+      \                sinais_rf = []\n                leitura_concluida = True\n\
+      \                f -= step\n    return f\n\ndef tratar_real(f, prob_lvl):\n\
+      \    freq = f\n    amplitude = prob_lvl\n    magnitude = prob_lvl if prob_lvl\
+      \ >= 0 else -prob_lvl\n    fase = 0 if prob_lvl >= 0 else np.pi\n    potencia_absoluta\
+      \ = calcular_potencia_absoluta(magnitude, fase)\n    potencia_dbm = calcular_potencia_dbm(potencia_absoluta)\n\
+      \    return {\"frequencia\": freq,  \"magnitude\": magnitude, \"potencia_dbm\"\
+      : potencia_dbm}\n\ndef criar_pastas():\n    pasta_principal = '/mnt/d/SpuR_(v2.0)/BD'\n\
+      \    pastas = ['Figuras', 'S2P', 'Tags_BD']\n    for pasta in pastas:\n    \
+      \    caminho_pasta = os.path.join(pasta_principal, pasta)\n        os.makedirs(caminho_pasta,\
+      \ exist_ok=True)\n    return pasta_principal\n\ndef save_figure(fig, path, dpi=300,\
+      \ format='png'):\n    for attempt in range(num_attempts):\n        fig.savefig(path,\
+      \ dpi=dpi, format=format)\n        if os.path.isfile(path):\n            break\n\
+      \ndef gerar_pasta_figuras(nome_grafico, formato, pasta_principal, ID):\n   \
+      \ caminho_pasta = f'{pasta_principal}/Figuras/Tag_{ID}/{formato}'\n    os.makedirs(caminho_pasta,\
+      \ exist_ok=True)\n    return f'{caminho_pasta}/{nome_grafico}.{formato}'\n\n\
+      def configurar_parametros():\n    plt.rcParams['lines.linewidth'] = 2\n    plt.rcParams['lines.color']\
+      \ = 'blue'\n    plt.rcParams['axes.facecolor'] = 'white'\n    plt.rcParams['axes.grid']\
+      \ = True\n    plt.rcParams['grid.color'] = 'gray'\n    plt.rcParams['xtick.labelsize']\
+      \ = 12\n    plt.rcParams['ytick.labelsize'] = 12\n    plt.rcParams['figure.figsize']\
+      \ = [10, 5]\n    plt.rcParams['font.size'] = 14\n    plt.rcParams['font.family']\
+      \ = 'serif'\n    plt.rcParams['legend.loc'] = 'lower right'  # Localiza\xE7\xE3\
+      o da legenda\n    plt.rcParams['legend.frameon'] = True  # Habilita ou desabilita\
+      \ o quadro da legenda\n    plt.rcParams['legend.framealpha'] = 0.5 # Transpar\xEA\
+      ncia do quadro da legenda\n    plt.rcParams['legend.facecolor'] = 'white'  #\
+      \ Cor de fundo da legenda\n    plt.rcParams['legend.edgecolor'] = 'black'  #\
+      \ Cor da borda da legenda\n    plt.rcParams['legend.fontsize'] = 10  # Tamanho\
+      \ da fonte da legenda\n    plt.legend(title='Tag ID: {ID}')\n    plt.rcParams['legend.title_fontsize']\
+      \ = 12  # Define o tamanho da fonte do t\xEDtulo da legenda\n\ndef plotar_grafico(df,\
+      \ coluna, titulo, ylabel, legenda, nome_grafico, pasta_principal, ID, formato,\
+      \ y_minimo, y_maximo):\n    fig, axs = plt.subplots()\n    formatter = FuncFormatter(format_decimal)\n\
+      \    axs.yaxis.set_major_formatter(formatter)\n    axs.plot(df['frequencia'],\
+      \ df[coluna], label=legenda)\n    axs.set_title(titulo)\n    axs.set_xlabel('Frequ\xEA\
+      ncia (GHz)')\n    axs.set_ylabel(ylabel)\n    axs.set_xlim([f_minima, f_maxima])\n\
+      \    axs.set_ylim([y_minimo, y_maximo])\n    axs.legend(title='Legenda')\n \
+      \   save_figure(fig, gerar_pasta_figuras(nome_grafico, formato, pasta_principal,\
+      \ ID), format=formato)\n    plt.close(fig)\n\ndef plotar_graficos(sinais_rf_tratados,\
+      \ pasta_principal, ID, formato):\n    if sinais_rf_tratados:\n        df_real\
+      \ = pd.DataFrame(sinais_rf_tratados)\n        plotar_grafico(df_real, 'magnitude',\
+      \ f'Magnitude vs Frequ\xEAncia - Tag ID: {ID}', 'Magnitude (V)', 'Magnitude\
+      \ (V)', f'SpuR_BD_{ID}_mag', pasta_principal, ID, formato, y_minimo=-1, y_maximo=1.5)\
+      \ \n        plotar_grafico(df_real, 'potencia_dbm', f'Pot\xEAncia Absoluta vs\
+      \ Frequ\xEAncia - Tag ID: {ID}', 'Pot\xEAncia Absoluta (dBm)', 'Pot\xEAncia\
+      \ (dBm)', f'SpuR_BD_{ID}_dbm', pasta_principal, ID, formato, y_minimo=-40, y_maximo=20)\n\
+      \ndef salvar_dados(sinais_rf_tratados, pasta_principal, ID):\n    if sinais_rf_tratados:\n\
+      \        df = pd.DataFrame(sinais_rf_tratados)\n        caminho_arquivo = f'{pasta_principal}/Tags_BD/Tag_ID_{ID}.csv'\n\
+      \        df.to_csv(caminho_arquivo, index=False)\n        arquivo_csv = f'{pasta_principal}/SpuR_v2.0_BD.csv'\n\
+      \        if os.path.exists(arquivo_csv):\n            df_existente = pd.read_csv(arquivo_csv,\
+      \ index_col='frequencia')\n            df_existente[f'mag_(Tag_ID_{ID})'] =\
+      \ df.set_index('frequencia')['magnitude']\n            df_existente = df_existente.sort_index(axis=1)\n\
+      \            df_existente.to_csv(arquivo_csv)\n        else:\n            df_novo\
+      \ = pd.DataFrame(df.set_index('frequencia')['magnitude'])\n            df_novo.columns\
+      \ = [f'mag_(Tag_ID_{ID})']\n            df_novo.to_csv(arquivo_csv)\n      \
+      \  with open(f'{pasta_principal}/S2P/Tag_ID_{ID}.s2p', 'w') as f:\n        \
+      \    f.write(f'!\tPar\xE2metros S - Tag_ID_{ID} \\n')\n            f.write('#\t\
+      Hz\tS\tMA\tR\t50 \\n')\n            f.write('!\tFreq\tmagS11\tangS11\tmagS21\t\
+      angS21\tmagS12\tangS12\tmagS22\tangS22\\n')\n            for index, row in df.iterrows():\n\
+      \                f.write(f'{row[\"frequencia\"]}\t0\t0\t{row[\"magnitude\"]}\t\
+      0\t0\t0\t0\t0\\n')\n\ndef format_decimal(x, pos):\n    return '{:.2f}'.format(x)\n\
+      \ndef calcular_potencia_absoluta(magnitude, angle):\n    z = magnitude * np.exp(1j\
+      \ * angle)\n    pot = (np.real(z)**2 + np.imag(z)**2) / 50\n    return pot\n\
+      \ndef calcular_potencia_dbm(pot):\n    if pot > 0:\n        pot_dbm = 10 * np.log10(pot\
+      \ * 1000)\n        return pot_dbm\n    else:\n        return None\n"
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [672, 28.0]
+    rotation: 0
+    state: enabled
+- name: qtgui_time_sink
+  id: qtgui_time_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha1: '1.0'
+    alpha10: '1.0'
+    alpha2: '1.0'
+    alpha3: '1.0'
+    alpha4: '1.0'
+    alpha5: '1.0'
+    alpha6: '1.0'
+    alpha7: '1.0'
+    alpha8: '1.0'
+    alpha9: '1.0'
+    autoscale: 'False'
+    axislabels: 'True'
+    color1: red
+    color10: dark blue
+    color2: blue
+    color3: green
+    color4: black
+    color5: cyan
+    color6: magenta
+    color7: yellow
+    color8: dark red
+    color9: dark green
+    comment: ''
+    ctrlpanel: 'True'
+    entags: 'True'
+    grid: 'True'
+    gui_hint: ''
+    label1: Real
+    label10: Signal 10
+    label2: Im
+    label3: Power (mW)
+    label4: Signal 4
+    label5: Signal 5
+    label6: Signal 6
+    label7: Signal 7
+    label8: Signal 8
+    label9: Signal 9
+    legend: 'True'
+    marker1: '-1'
+    marker10: '-1'
+    marker2: '-1'
+    marker3: '-1'
+    marker4: '-1'
+    marker5: '-1'
+    marker6: '-1'
+    marker7: '-1'
+    marker8: '-1'
+    marker9: '-1'
+    name: '""'
+    nconnections: '1'
+    size: '2048'
+    srate: samp_rate
+    stemplot: 'False'
+    style1: '1'
+    style10: '1'
+    style2: '2'
+    style3: '1'
+    style4: '1'
+    style5: '1'
+    style6: '1'
+    style7: '1'
+    style8: '1'
+    style9: '1'
+    tr_chan: '0'
+    tr_delay: '0'
+    tr_level: '0.0'
+    tr_mode: qtgui.TRIG_MODE_TAG
+    tr_slope: qtgui.TRIG_SLOPE_POS
+    tr_tag: '"packet_len"'
+    type: float
+    update_time: '0.001'
+    width1: '1'
+    width10: '1'
+    width2: '1'
+    width3: '1'
+    width4: '1'
+    width5: '1'
+    width6: '1'
+    width7: '1'
+    width8: '1'
+    width9: '1'
+    ylabel: (mV)
+    ymax: '1'
+    ymin: '0'
+    yunit: '""'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [656, 308.0]
+    rotation: 0
+    state: enabled
+
+connections:
+- [analog_sig_source, '0', hilbert, '0']
+- [complex_to_mag, '0', moving_average, '0']
+- [hilbert, '0', iio_pluto_sink, '0']
+- [iio_pluto_source, '0', complex_to_mag, '0']
+- [moving_average, '0', probSign, '0']
+- [moving_average, '0', qtgui_time_sink, '0']
+
+metadata:
+  file_format: 1
+  grc_version: 3.10.7.0
